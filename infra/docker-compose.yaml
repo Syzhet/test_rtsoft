@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  db:
+    image : postgres:${DB_TAG}
+    container_name: rtsoft_db
+    restart: always
+    volumes:
+      - rtsoft_postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - db.env
+    ports:
+      - 5432:5432
+  api:
+    build: ../
+    restart: always
+    container_name: rtsoft_app
+    env_file:
+      - config.env
+    ports:
+      - 7000:7000
+    depends_on:
+      - db
+
+volumes:
+    rtsoft_postgres_data:

@@ -1,7 +1,5 @@
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
-                                    create_async_engine)
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+                                    async_sessionmaker, create_async_engine)
 
 from config.config import base_config
 
@@ -17,22 +15,9 @@ DATABASE_URL: str = (
 
 engine: AsyncEngine = create_async_engine(DATABASE_URL, echo=True)
 
-async_session: AsyncSession = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
+async_session: AsyncSession = async_sessionmaker(
+    engine, expire_on_commit=False
 )
-
-Base = declarative_base()
-
-
-async def init_models() -> None:
-    """
-    Function for deleting old tables from the database
-    and creating new ones.
-    """
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
 
 
 async def get_session() -> AsyncSession:
