@@ -1,3 +1,4 @@
+from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     async_sessionmaker, create_async_engine)
 
@@ -24,4 +25,9 @@ async def get_session() -> AsyncSession:
     """Function for creating a database connection session."""
 
     async with async_session() as session:
-        yield session
+        try:
+            yield session
+            await session.commit()
+        except exc.SQLAlchemyError as error:
+            await session.rollback()
+            raise error

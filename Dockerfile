@@ -8,4 +8,6 @@ RUN python -m pip install --upgrade pip &&pip install -r requirements.txt --no-c
 
 COPY . .
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+RUN chmod +x ./start.sh
+
+ENTRYPOINT [ "sh", "start.sh" ]

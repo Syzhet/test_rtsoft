@@ -1,15 +1,18 @@
 from typing import Union
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
-router: APIRouter = APIRouter(
-    prefix='/main'
-)
+from db.models.models import Image
+from db.base import get_session
+
+router: APIRouter = APIRouter()
 
 
 @router.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def read_root(session: AsyncSession = Depends(get_session)):
+    data = await session.get(Image, 1)
+    return {"Hello": f"{data}"}
 
 
 @router.get("/items/{item_id}")

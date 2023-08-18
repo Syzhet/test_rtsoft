@@ -1,7 +1,7 @@
 import asyncio
 import csv
 from pathlib import Path, PosixPath
-from typing import Dict, List, Optional, Generator
+from typing import Dict, Generator, List, Optional
 
 from db.base import async_session
 from db.models.models import Group, Image
