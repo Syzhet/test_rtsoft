@@ -14,8 +14,23 @@ group_image_association = Table(
 )
 
 
-class Image(Base):
-    """Сlass for representing a image in database."""
+class DateBase(Base):
+    """
+    Абстрактный класс для добавления поля даты
+    в классы где это необходимо.
+    """
+
+    __abstract__ = True
+
+    updated_on = Column(
+        DateTime(),
+        server_default=func.now(),
+        onupdate=func.now()
+    )
+
+
+class Image(DateBase):
+    """Класс для работы с данными изображений."""
 
     __tablename__ = 'images'
 
@@ -35,14 +50,13 @@ class Image(Base):
         return f'id: {self.id}, image_url: {self.image_url}'
 
 
-class Group(Base):
-    """Сlass for representing a group in database."""
+class Group(DateBase):
+    """Класс для работы с данными групп."""
 
     __tablename__ = 'groups'
 
     id = Column(Integer(), primary_key=True)
-    title = Column(String(), nullable=False, unique=True)
-    updated_on = Column(DateTime(), server_default=func.now())
+    title = Column(String(100), nullable=False, unique=True)
     images = relationship(
         "Image",
         secondary=group_image_association,
