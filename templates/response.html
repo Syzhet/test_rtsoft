@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>id изображения: {{ data.id }}</title>
+    <title>
+        {% if data %}
+            id изображения: {{ data.id }}
+        {% else %}
+            Изображение отсутствует
+        {% endif %}
+    </title>
     <style>
         body {
             display: flex;
@@ -18,6 +24,10 @@
     </style>
 </head>
 <body>
-    <p><img src="{{ data.image_url }}" alt="Cat-image"></p>
+    {% if data %}
+        <p><img src="{{ data.image_url }}" alt="Cat-image"></p>
+    {% else %}
+        <h2>Нет доступных изображений для данных параметров запроса</h2>
+    {% endif %}
 </body>
 </html>
