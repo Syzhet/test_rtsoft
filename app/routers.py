@@ -1,7 +1,5 @@
-from typing import Union
-
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Depends, Request, status
+from fastapi.responses import HTMLResponse, PlainTextResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,7 +12,11 @@ router: APIRouter = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@router.get("/", response_class=HTMLResponse)
+@router.get(
+    "/",
+    response_class=HTMLResponse,
+    status_code=status.HTTP_200_OK
+)
 async def read_root(
     request: Request,
     session: AsyncSession = Depends(get_session),
@@ -31,6 +33,10 @@ async def read_root(
     )
 
 
-@router.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@router.get(
+    "/health-check",
+    response_class=PlainTextResponse,
+    status_code=status.HTTP_200_OK
+)
+def health_check():
+    return 'Application: OK'

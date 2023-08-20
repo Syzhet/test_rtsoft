@@ -1,6 +1,6 @@
-from fastapi.responses import PlainTextResponse
 import uvicorn
 from fastapi import FastAPI, status
+from fastapi.responses import PlainTextResponse
 
 from app.routers import router
 from config.config import base_config

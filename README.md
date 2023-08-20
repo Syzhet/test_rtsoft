@@ -86,7 +86,7 @@ sudo docker-compose up -d
 
 После развертывания функционал проекта будет доступен по адресам:
 
-http://localhost:8080/api/v1/ - получение изображения (параметр запроса ?category[]=название категории);
+http://localhost:8080/api/v1/ - получение HTML-старницы с изображением (параметр запроса ?category[]=название категории);
 http://localhost:8080/static/название_изображения.jpg - ссылка на изображение из папки static/ проекта;
 http://localhost:8080/docs - ссылка на API документацию Swagger
 http://localhost:8080/redoc - ссылка на API документацию Redoc
