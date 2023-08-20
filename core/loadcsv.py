@@ -1,10 +1,27 @@
 import asyncio
 import csv
+import logging
+import sys
 from pathlib import Path, PosixPath
 from typing import Dict, Generator, List, Optional
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from db.base import async_session
 from db.models.models import Group, Image
+
+logger = logging.getLogger('loadcsv.py')
+logger.setLevel(logging.ERROR)
+
+stdout_handler = logging.StreamHandler(sys.stdout)
+
+formatter = logging.Formatter(
+    u'%(filename)s:%(lineno)d: '
+    u'#%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s'
+)
+stdout_handler.setFormatter(formatter)
+
+logger.addHandler(stdout_handler)
 
 
 class ReadCsvFile:
@@ -128,16 +145,22 @@ class LoadInitDataToDB:
 
         groups_data: Dict[str, Group] = self._prepare_group()
         for data_obj in self._prepare_data():
-            async with async_session() as session:
-                new_image: Image = Image(
-                    image_url=data_obj['Image'][0],
-                    count=int(data_obj['Image'][1])
-                )
-                session.add(new_image)
-                groups = [groups_data[group] for group in data_obj['Groups']]
-                session.add_all(groups)
-                new_image.groups.extend(groups)
-                await session.commit()
+            try:
+                async with async_session() as session:
+                    new_image: Image = Image(
+                        image_url=data_obj['Image'][0],
+                        count=int(data_obj['Image'][1])
+                    )
+                    session.add(new_image)
+                    groups = [
+                        groups_data[group] for group in data_obj['Groups']
+                    ]
+                    session.add_all(groups)
+                    new_image.groups.extend(groups)
+                    await session.commit()
+            except SQLAlchemyError as e:
+                logger.error(e)
+                await session.rollback()
 
 
 async def main() -> None:

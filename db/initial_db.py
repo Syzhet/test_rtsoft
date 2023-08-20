@@ -11,6 +11,9 @@ async def init_models() -> None:
     and creating new ones.
     """
 
+    # необходимо на первый запуск чтобы контейнер с БД
+    # успел инициализироваться
+    await asyncio.sleep(5)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)

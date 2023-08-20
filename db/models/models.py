@@ -1,6 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Table
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 from sqlalchemy.sql import func
 
 Base = declarative_base()
@@ -45,6 +46,15 @@ class Image(DateBase):
         cascade='merge',
         lazy='joined'
     )
+
+    @validates('groups')
+    def validate_groups(self, key, value):
+        if len(self.groups) >= 10:
+            raise SQLAlchemyError(
+                f"Изображение ({self.image_url.split('/')[-1]}) "
+                "не может быть связано более чем с 10 группами."
+            )
+        return value
 
     def __str__(self):
         return f'id: {self.id}, image_url: {self.image_url}'
