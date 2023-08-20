@@ -71,9 +71,9 @@ infra/ (директория где лежит файл docker-compose.yaml)
 
 Параметры запуска описаны в файлах docker-compose.yaml
 
-Запустите docker-compose:
+Перейдите в папку infra/ и запустите docker-compose:
 ```sh
-sudo docker-compose up -d
+sudo docker-compose up --build -d
 ```
 
 После сборки появляется 4 контейнера:
