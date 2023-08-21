@@ -36,7 +36,7 @@
 
 Версии ПО:
 
-- python: 3.10.4;
+- python: 3.10.12;
 - fastapi: 0.101.1;
 - uvicorn: 0.23.2;
 - Docker: 20.10.18;
@@ -67,7 +67,7 @@ infra/ (директория где лежит файл docker-compose.yaml)
 Создайте файл data.csv и поместите его в папку core/
 
 В папку static/ поместите файлы изображений с именами соответствующими
-указанным в файле data.csv
+указанным в файле data.csv (файл .gitignore в этой папке является placeholder)
 
 Параметры запуска описаны в файлах docker-compose.yaml
 
@@ -86,11 +86,20 @@ sudo docker-compose up --build -d
 
 После развертывания функционал проекта будет доступен по адресам:
 
-http://localhost:8080/api/v1/ - получение HTML-старницы с изображением (параметр запроса ?category[]=название категории);
-http://localhost:8080/static/название_изображения.jpg - ссылка на изображение из папки static/ проекта;
-http://localhost:8080/docs - ссылка на API документацию Swagger
-http://localhost:8080/redoc - ссылка на API документацию Redoc
+- http://localhost:8080/api/v1/ - получение HTML-старницы с изображением (параметр запроса ?category[]=название категории);
+- http://localhost:8080/static/название_изображения.jpg - ссылка на изображение из папки static/ проекта;
+- http://localhost:8080/docs - ссылка на API документацию Swagger
+- http://localhost:8080/redoc - ссылка на API документацию Redoc
 
+После развертывания контейнеров можно подключиться к контейнеру rtsoft_app:
+```sh
+sudo docker exec -it {id_контейнера} sh
+```
+
+И выполнить запуск тестов:
+```sh
+python -m unittest discover tests
+```
 
 ## Автор проекта
 

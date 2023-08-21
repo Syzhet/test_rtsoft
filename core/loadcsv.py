@@ -43,7 +43,11 @@ class ReadCsvFile:
         """
 
         current_file_path: PosixPath = Path(__file__).parent
-        return Path(current_file_path, f'{self.name_csv_file}.csv')
+        return Path(
+            current_file_path.parent,
+            'core',
+            f'{self.name_csv_file}.csv'
+        )
 
     def _read_data_from_csv_file(self) -> Generator[List[str], None, None]:
         """
