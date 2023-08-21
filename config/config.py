@@ -10,7 +10,7 @@ class AppConfig(BaseModel):
 
 
 class DbConfig(BaseModel):
-    """Конфигурационный класс для БД Postgres."""
+    """Конфигурационный класс для БД PostgreSQL."""
 
     db_host: str
     database: str
