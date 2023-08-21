@@ -22,7 +22,9 @@ async_session: AsyncSession = async_sessionmaker(
 
 
 async def get_session() -> AsyncSession:
-    """Function for creating a database connection session."""
+    """
+    Функция отдает объек сессии
+    для работы с БД PostgreSQL."""
 
     async with async_session() as session:
         try:

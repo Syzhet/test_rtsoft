@@ -3,14 +3,14 @@ from pydantic_settings import BaseSettings
 
 
 class AppConfig(BaseModel):
-    """Configuration class for FastAPI application."""
+    """Конфигурационный класс для приложения FastAPI."""
 
     app_host: str
     app_port: str
 
 
 class DbConfig(BaseModel):
-    """Configuration class for databse postgres."""
+    """Конфигурационный класс для БД Postgres."""
 
     db_host: str
     database: str
@@ -20,7 +20,10 @@ class DbConfig(BaseModel):
 
 
 class BaseConfig(BaseSettings):
-    """A common configuration class for the entire project."""
+    """
+    Основной конфигурационный класс
+    для подгрузки значений из переменных окружения.
+    """
 
     app: AppConfig
     db: DbConfig

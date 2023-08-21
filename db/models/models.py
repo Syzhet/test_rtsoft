@@ -7,10 +7,10 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 
-group_image_association = Table(
-    'group_image_association',
+category_image_association: Table = Table(
+    'category_image_association',
     Base.metadata,
-    Column('group_id', Integer, ForeignKey('groups.id')),
+    Column('category_id', Integer, ForeignKey('categories.id')),
     Column('image_id', Integer, ForeignKey('images.id'))
 )
 
@@ -39,20 +39,20 @@ class Image(DateBase):
     image_url = Column(String(200), nullable=False, unique=True)
     count = Column(Integer(), nullable=False)
 
-    groups = relationship(
-        "Group",
-        secondary=group_image_association,
+    categories = relationship(
+        "Category",
+        secondary=category_image_association,
         back_populates='images',
         cascade='merge',
         lazy='joined'
     )
 
-    @validates('groups')
-    def validate_groups(self, key, value):
-        if len(self.groups) >= 10:
+    @validates('categories')
+    def validate_categories(self, key, value):
+        if len(self.categories) >= 10:
             raise SQLAlchemyError(
                 f"Изображение ({self.image_url.split('/')[-1]}) "
-                "не может быть связано более чем с 10 группами."
+                "не может быть связано более чем с 10 категориями."
             )
         return value
 
@@ -60,17 +60,17 @@ class Image(DateBase):
         return f'id: {self.id}, image_url: {self.image_url}'
 
 
-class Group(DateBase):
-    """Класс для работы с данными групп."""
+class Category(DateBase):
+    """Класс для работы с данными категорий."""
 
-    __tablename__ = 'groups'
+    __tablename__ = 'categories'
 
     id = Column(Integer(), primary_key=True)
     title = Column(String(100), nullable=False, unique=True)
     images = relationship(
         "Image",
-        secondary=group_image_association,
-        back_populates='groups',
+        secondary=category_image_association,
+        back_populates='categories',
         cascade='merge',
         lazy='joined'
     )

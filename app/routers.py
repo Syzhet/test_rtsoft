@@ -22,6 +22,18 @@ async def read_root(
     session: AsyncSession = Depends(get_session),
     category: QueryParametr = Depends()
 ):
+    """
+    Функция обрабатывает эндпоинт /api/v1/?category[]=название_категории
+
+    Args:
+        request (Request): объект запроса
+        session (AsyncSession, optional): объект сессии SQLAlchemy
+        category (QueryParametr, optional): параметр запроса
+
+    Returns:
+        HTMLResponse: HTML-страница
+    """
+
     request_to_db = ReqouestToDB(
         session,
         category.model_dump().get('category')
@@ -39,4 +51,12 @@ async def read_root(
     status_code=status.HTTP_200_OK
 )
 def health_check():
+    """
+    Эндпоинт для тестирования работаспособности сервиса
+    после запуска
+
+    Returns:
+        PlainTextResponse: строка ответа
+    """
+
     return 'Application: OK'

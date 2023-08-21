@@ -18,6 +18,7 @@ async def validation_exception_handler(
     request, exc: ValueError
 ) -> PlainTextResponse:
     """Обработка исключений при валидации передаваемых параметров запроса."""
+
     return PlainTextResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
         content=str(exc).split('\n')[2]

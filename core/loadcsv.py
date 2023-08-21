@@ -8,7 +8,7 @@ from typing import Dict, Generator, List, Optional
 from sqlalchemy.exc import SQLAlchemyError
 
 from db.base import async_session
-from db.models.models import Group, Image
+from db.models.models import Category, Image
 
 logger = logging.getLogger('loadcsv.py')
 logger.setLevel(logging.ERROR)
@@ -103,51 +103,53 @@ class LoadInitDataToDB:
     def _prepare_data(self) -> Generator[Dict[str, str], None, None]:
         """
         Генератор поочередно отдает словари с данными разделенными
-        для создания объектов Image и Group.
+        для создания объектов Image и Category.
 
         Yields:
             Generator[Dict[str, str], None, None]: словарь с данными
                                                    разделенными для
                                                    создания объектов
-                                                   Image и Group
+                                                   Image и Category
         """
 
         initial_data: List[List[str]] = self._get_data()
         for row in initial_data:
             row_dict: Dict[str, str] = {
                 "Image": row[:2],
-                "Groups": row[2:]
+                "Categories": row[2:]
             }
             yield row_dict
 
-    def _prepare_group(self) -> Dict[str, Group]:
+    def _prepare_category(self) -> Dict[str, Category]:
         """
         Функция возвращает словарь где значениями являются
-        объекты класса Group. Ключи в словаре имеют
-        то же значение что и поле title объекта Group,
+        объекты класса Category. Ключи в словаре имеют
+        то же значение что и поле title объекта Category,
         отображающегося на данный ключ.
 
         Returns:
-            Dict[str, Group]: словарь с объектами
-                              Group в значениях
+            Dict[str, Category]: словарь с объектами
+                                 Category в значениях
         """
 
         data = self._prepare_data()
-        unique_groups: Dict[str, Group] = {}
+        unique_categories: Dict[str, Category] = {}
         for data_obj in data:
-            for group in data_obj['Groups']:
-                if group in unique_groups:
+            for category in data_obj['Categories']:
+                if category in unique_categories:
                     continue
-                unique_groups[group]: Group = Group(title=group)
-        return unique_groups
+                unique_categories[category]: Category = Category(
+                    title=category
+                )
+        return unique_categories
 
     async def create_objs_in_db(self) -> None:
         """
         Функция создает записи в таблицах базы данных
-        на основании объектов Image и Group.
+        на основании объектов Image и Category.
         """
 
-        groups_data: Dict[str, Group] = self._prepare_group()
+        categories_data: Dict[str, Category] = self._prepare_category()
         for data_obj in self._prepare_data():
             try:
                 async with async_session() as session:
@@ -156,11 +158,12 @@ class LoadInitDataToDB:
                         count=int(data_obj['Image'][1])
                     )
                     session.add(new_image)
-                    groups = [
-                        groups_data[group] for group in data_obj['Groups']
+                    categories = [
+                        categories_data[category] for category
+                        in data_obj['Categories']
                     ]
-                    session.add_all(groups)
-                    new_image.groups.extend(groups)
+                    session.add_all(categories)
+                    new_image.categories.extend(categories)
                     await session.commit()
             except SQLAlchemyError as e:
                 logger.error(e)

@@ -7,8 +7,7 @@ from .base import engine
 
 async def init_models() -> None:
     """
-    Function for deleting old tables from the database
-    and creating new ones.
+    Функция удаляет старые таблицы и создает их заново.
     """
 
     # необходимо на первый запуск чтобы контейнер с БД
@@ -20,6 +19,11 @@ async def init_models() -> None:
 
 
 async def main():
+    """
+    Функция запускает процесс создания
+    таблиц в БД PostgreSQL.
+    """
+
     await init_models()
 
 

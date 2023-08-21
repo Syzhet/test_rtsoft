@@ -4,7 +4,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from db.models.models import Group, Image
+from db.models.models import Category, Image
 
 
 class ReqouestToDB:
@@ -15,10 +15,10 @@ class ReqouestToDB:
     def __init__(
             self,
             session: AsyncSession,
-            groups: Optional[Union[str, List[str]]]
+            categories: Optional[Union[str, List[str]]]
     ) -> None:
         self.session: AsyncSession = session
-        self.groups: Optional[Union[str, List[str]]] = groups
+        self.categories: Optional[Union[str, List[str]]] = categories
 
     async def change_count_view(
         self,
@@ -90,20 +90,21 @@ class ReqouestToDB:
         await self.change_count_view(model, image_data.id)
         return {'id': image_data.id, 'image_url': image_data.image_url}
 
-    async def select_group_objects(
+    async def select_category_objects(
         self,
-        model: Group,
-        groups: Optional[Union[str, List[str]]]
+        model: Category,
+        categories: Optional[Union[str, List[str]]]
     ) -> Union[List[Any], Dict[str, Union[int, str]]]:
         """
-        Метод получает данные о запрашиваеых пользователем группах
+        Метод получает данные о запрашиваеых пользователем категориях
         и возвращает список id изображений для этих групп либо пустой
         список если ничего не найдено.
 
         Args:
-            model (Group): класс Group
-            groups (Optional[Union[str, List[str]]]): названия запрашиваемых
-                                                      групп
+            model (Category): класс Category
+            categories (Optional[Union[str, List[str]]]): названия
+                                                          запрашиваемых
+                                                          категорий
 
         Returns:
             Union[List[Any], Dict[str, Union[int, str]]]: Список id изображений
@@ -113,17 +114,17 @@ class ReqouestToDB:
                                                           изображений
         """
 
-        if groups:
-            query = select(model).filter(model.title.in_(groups))
+        if categories:
+            query = select(model).filter(model.title.in_(categories))
         else:
             query = select(model)
         query = query.options(selectinload(model.images))
-        group = await self.session.execute(query)
-        if group is not None:
+        category = await self.session.execute(query)
+        if category is not None:
             images = list({
                 image.id
-                for group in group.scalars()
-                for image in group.images
+                for category in category.scalars()
+                for image in category.images
                 if image.count > 0
             })
             if images:
@@ -137,7 +138,7 @@ class ReqouestToDB:
         Returns:
             _type_: _description_
         """
-        return await self.select_group_objects(
-            Group,
-            self.groups
+        return await self.select_category_objects(
+            Category,
+            self.categories
         )
