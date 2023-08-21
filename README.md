@@ -39,11 +39,11 @@
 - python: 3.10.12;
 - fastapi: 0.101.1;
 - uvicorn: 0.23.2;
-- Docker: 20.10.18;
-- docker-compose: 1.26.0;
 - pydantic: 2.1.1;
 - asyncpg: 0.28;
-- Jinja2: 3.1.2.
+- Jinja2: 3.1.2;
+- Docker: 20.10.18;
+- docker-compose: 1.26.0.
 
 
 # Локальный запуск проекта в Docker-контейнерах
@@ -61,7 +61,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 Cоздайте файлы .env, config.env, db.env в директории
-infra/ (директория где лежит файл docker-compose.yaml)
+infra/ (директория, где лежит файл docker-compose.yaml)
 (примеры наполнения файлов приведены в файлах example*.env в этой же папке)
 
 Создайте файл data.csv и поместите его в папку core/
@@ -76,7 +76,7 @@ infra/ (директория где лежит файл docker-compose.yaml)
 sudo docker-compose up --build -d
 ```
 
-После сборки появляется 4 контейнера:
+После сборки появляется 3 контейнера:
 
 | Контайнер | Описание |
 | ------ | ------ |
